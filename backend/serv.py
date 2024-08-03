@@ -17,6 +17,9 @@ uri = os.getenv('MONGO_URI')
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["Cluster0"]
 
+GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
+
+
 if "user_contributions" not in db.list_collection_names():
     db.create_collection("user_contributions")
 
@@ -77,13 +80,15 @@ def get_location_ratings(location_id):
     ratings = location.get('ratings', [])
     return jsonify(parse_json(ratings)), 200
 
-GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
+
 
 @app.route('/search', methods=['GET'])
 def search_places():
     query = request.args.get('query')
+
     accessibility_features = request.args.getlist('features')
-    
+    print(f"Received query: {query}")
+    print(f"Received accessibility features: {accessibility_features}")
     url = "https://places.googleapis.com/v1/places:searchText"
     headers = {
         "Content-Type": "application/json",
@@ -96,7 +101,10 @@ def search_places():
     
     response = requests.post(url, json=data, headers=headers)
     places_data = response.json()
-    
+    print(f"Google Places API response status code: {response.status_code}")
+    print(f"Google Places API response content: {response.text}")
+    print(f"Parsed places data: {places_data}")
+    print(f"Number of places received: {len(places_data.get('places', []))}")
     results = []
     for place in places_data.get('places', []):
         photo_url = None
@@ -123,11 +131,17 @@ def search_places():
             'accessibility_info': accessibility_info,
             'ratings': ratings
         }
-        
+        print(f"Place ID: {place_id}")
+        print(f"DB location: {db_location}")
+        print(f"Accessibility info: {accessibility_info}")
+        print(f"Requested features: {accessibility_features}")
         # Filter based on accessibility features
         if not accessibility_features or (accessibility_features and all(feature in accessibility_info.get('features', []) for feature in accessibility_features)):
+            print("Place added to results")
             results.append(place_data)
-    
+        else:
+            print("Place filtered out")
+    print(results)
     return jsonify(results)
 
 @app.route('/locations/<location_id>/accessibility', methods=['GET'])

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DetailedLocation from './DetailedLocation';
@@ -22,35 +22,25 @@ import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import WcIcon from '@mui/icons-material/Wc';
 
-const accessibilityFeatures = [
-  { label: 'Ramps', icon: <AccessibilityNewIcon /> },
-  { label: 'Low Noise', icon: <VolumeDownIcon /> },
-  { label: 'Well Lit', icon: <WbSunnyIcon /> },
-  { label: 'Accessible Toilets', icon: <WcIcon /> },
-];
-
 function Search() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedFeatures, setSelectedFeatures] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
     const [selectedLocation, setSelectedLocation] = useState(null);
-    const [accessibilityFilters, setAccessibilityFilters] = useState([]);
-    const [forceUpdate, setForceUpdate] = useState(0);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-      handleSearch();
-    }, [selectedFeatures, forceUpdate]);
+    const accessibilityFeatures = useMemo(() => [
+      { label: 'Ramps', icon: <AccessibilityNewIcon /> },
+      { label: 'Low Noise', icon: <VolumeDownIcon /> },
+      { label: 'Well Lit', icon: <WbSunnyIcon /> },
+      { label: 'Accessible Toilets', icon: <WcIcon /> },
+    ], []);
 
-    const handleCardClick = (place) => {
-      setSelectedLocation(place);
-    };
-  
-    const handleCloseDetailedView = () => {
-      setSelectedLocation(null);
-    };
-  
-    const handleSearch = async () => {
+    const handleSearch = useCallback(async () => {
+      setIsLoading(true);
+      setError(null);
       try {
         const response = await axios.get(`http://localhost:8000/search`, {
           params: {
@@ -61,7 +51,24 @@ function Search() {
         setSearchResults(response.data);
       } catch (error) {
         console.error("Error fetching search results:", error);
+        setError("An error occurred while fetching results. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
+    }, [searchQuery, selectedFeatures]);
+
+    useEffect(() => {
+      if (searchQuery) {
+        handleSearch();
+      }
+    }, [handleSearch, searchQuery]);
+
+    const handleCardClick = (place) => {
+      setSelectedLocation(place);
+    };
+  
+    const handleCloseDetailedView = () => {
+      setSelectedLocation(null);
     };
   
     const handleFeatureToggle = (feature) => {
@@ -72,9 +79,24 @@ function Search() {
       );
     };
 
-    const handleContributionSubmit = () => {
-      setForceUpdate(prev => prev + 1);
+    const handleContributionSubmit = (placeId, newContribution) => {
+      setSearchResults(prevResults => 
+        prevResults.map(place => 
+          place.place_id === placeId 
+            ? {
+                ...place,
+                accessibility_info: {
+                  ...place.accessibility_info,
+                  features: [...new Set([...(place.accessibility_info?.features || []), ...newContribution.features])]
+                },
+                ratings: [...(place.ratings || []), { rating: newContribution.rating, comment: newContribution.comment }]
+              }
+            : place
+        )
+      );
+      setSelectedLocation(null);
     };
+
 
   return (
     <div className="flex h-full justify-center items-center flex-col">
@@ -92,16 +114,26 @@ function Search() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for a place..."
+            aria-label="Search for a place"
           />
-          <button className="w-1/5 justify-center flex flex-row bg-blue-500 
-                            hover:bg-blue-700 transition duration-300 ease-in-out
-                            text-white font-bold py-2 px-4 rounded align-left"
-                            onClick={handleSearch}>
-            <SearchIcon />
-            Search 
+          <button 
+            className="w-1/5 justify-center flex flex-row bg-blue-500 
+                      hover:bg-blue-700 transition duration-300 ease-in-out
+                      text-white font-bold py-2 px-4 rounded align-left"
+            onClick={handleSearch}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Searching...' : (
+              <>
+                <SearchIcon />
+                Search
+              </>
+            )}
           </button>
         </div>
       </div>
+
+      {error && <div className="text-red-500 mt-2">{error}</div>}
 
       {/* Select Accessibility Features */}
       <div className="flex flex-col mt-10 items-center justify-center">
