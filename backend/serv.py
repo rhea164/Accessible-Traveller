@@ -74,6 +74,43 @@ def get_location_ratings(location_id):
     ratings = location.get('ratings', [])
     return jsonify(parse_json(ratings)), 200
 
+GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
+
+@app.route('/search', methods=['GET'])
+def search_places():
+    query = request.args.get('query')
+    
+    url = "https://places.googleapis.com/v1/places:searchText"
+    headers = {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": GOOGLE_PLACES_API_KEY,
+        "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.photos,places.rating,places.userRatingCount"
+    }
+    data = {
+        "textQuery": query
+    }
+    
+    response = requests.post(url, json=data, headers=headers)
+    places_data = response.json()
+    
+    results = []
+    for place in places_data.get('places', []):
+        photo_url = None
+        if place.get('photos'):
+            photo_reference = place['photos'][0]['name']
+            photo_url = f"https://places.googleapis.com/v1/{photo_reference}/media?key={GOOGLE_PLACES_API_KEY}&maxHeightPx=400&maxWidthPx=400"
+        
+        results.append({
+            'name': place['displayName']['text'],
+            'address': place.get('formattedAddress', 'Address not available'),
+            'rating': place.get('rating', 'Not rated'),
+            'user_ratings_total': place.get('userRatingCount', 0),
+            'photo_url': photo_url
+        })
+    
+    return jsonify(results)
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
     
