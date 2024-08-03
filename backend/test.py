@@ -1,7 +1,7 @@
 import requests
 import json
 
-BASE_URL = 'http://localhost:5000'
+BASE_URL = 'http://localhost:8000'
 
 def test_add_location_and_ratings():
     new_location = {

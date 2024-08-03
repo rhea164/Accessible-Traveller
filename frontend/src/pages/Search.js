@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import DetailedLocation from './DetailedLocation';
 import { 
     Container, 
     Typography, 
@@ -35,12 +36,28 @@ function Search() {
     const [searchResults, setSearchResults] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);  // State for the selected place
     const navigate = useNavigate();
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [accessibilityFilters, setAccessibilityFilters] = useState([]);
+    const [forceUpdate, setForceUpdate] = useState(0);
+
+    useEffect(() => {
+      handleSearch();
+    }, [selectedFeatures, forceUpdate]);
+
+    const handleCardClick = (place) => {
+      setSelectedLocation(place);
+    };
+  
+    const handleCloseDetailedView = () => {
+      setSelectedLocation(null);
+    };
   
     const handleSearch = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/search`, {
+        const response = await axios.get(`http://localhost:8000/search`, {
           params: {
             query: searchQuery,
+            features: selectedFeatures,
           },
         });
         setSearchResults(response.data);
@@ -57,12 +74,8 @@ function Search() {
       );
     };
 
-    const handleCardClick = (place) => {
-      setSelectedPlace(place);
-    };
-
-    const handleCloseDetailView = () => {
-      setSelectedPlace(null);
+    const handleContributionSubmit = () => {
+      setForceUpdate(prev => prev + 1);
     };
 
   return (
@@ -123,11 +136,7 @@ function Search() {
         <Grid container spacing={3}>
           {searchResults.map((place, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card 
-                style={{ height: '100%' }} 
-                className="border-4 border-slate-100 rounded-lg shadow-none"
-                onClick={() => handleCardClick(place)}
-              >
+              <Card style={{ height: '100%' }} onClick={() => handleCardClick(place)}>
                 <CardActionArea style={{ height: '100%' }}>
                   <CardMedia
                     component="img"
@@ -149,18 +158,24 @@ function Search() {
                         ({place.rating}) · {place.user_ratings_total} reviews
                       </Typography>
                     </Box>
+                    <Box mt={1}>
+                      {place.accessibility_info?.features?.map((feature, i) => (
+                        <Chip key={i} label={feature} size="small" style={{ margin: '2px' }} />
+                      ))}
+                    </Box>
                   </CardContent>
                 </CardActionArea>
               </Card>
             </Grid>
           ))}
         </Grid>
-
-         {/* Detailed View */}
-        {selectedPlace && (
-          <DetailedView place={selectedPlace} onClose={handleCloseDetailView} />
-        )}
       </Container>
+      <DetailedLocation
+        open={!!selectedLocation}
+        handleClose={handleCloseDetailedView}
+        location={selectedLocation}
+        onContributionSubmit={handleContributionSubmit}
+      />
     </div>
   );
 }
