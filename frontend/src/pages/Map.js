@@ -1,13 +1,13 @@
 // src/pages/Maps.js
 import React from 'react';
+import MapComponent from '../components/MapComponent';
 
-const Maps = () => {
+const Map = () => {
   return (
     <div>
-      <h1>Maps Page</h1>
-      <p>View maps here.</p>
+      <MapComponent />
     </div>
   );
 };
 
-export default Maps;
+export default Map;

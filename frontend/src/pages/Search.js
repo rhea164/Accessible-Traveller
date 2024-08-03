@@ -1,7 +1,7 @@
 // src/pages/Search.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios  from 'axios';
 import { 
     Container, 
     Typography, 
@@ -58,7 +58,7 @@ function Search() {
   return (
     <div className="flex h-full justify-center items-center flex-col">
       <div className="flex flex-col items-center justify-center p-14 gap-y-10">
-        <h1 className="text-6xl">Hi, where would you like to go?</h1>
+        <h1 className="text-6xl align-center">Hi, where would you like to go?</h1>
         <h4 className="text-2xl">Tell us your preferences</h4>
       </div>
 

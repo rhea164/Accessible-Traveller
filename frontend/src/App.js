@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Search from './pages/Search';
-import Maps from './pages/Map';
+import Map from './pages/Map';
 
 const App = () => {
   return (
@@ -14,7 +14,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/maps" element={<Maps />} />
+          <Route path="/map" element={<Map />} />
         </Routes>
       </main>
     </div>
