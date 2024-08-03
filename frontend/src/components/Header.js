@@ -10,14 +10,17 @@ const Header = () => {
                                 transition duration-300 ease-in-out">
                                     Home
         </Link>
+
         <Link to="/search" className="hover:text-gray-300 mx-6
                                     transition duration-300 ease-in-out">
                                         Search
         </Link>
+
         <Link to="/map" className="hover:text-gray-300 mx-6
                                     transition duration-300 ease-in-out">
             Map
         </Link>
+        
       </nav>
     </header>
   );
