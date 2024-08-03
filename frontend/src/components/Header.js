@@ -4,25 +4,29 @@ import { Link } from 'react-router-dom'; // Import Link from react-router-dom fo
 
 const Header = () => {
   return (
-    <header className="flex flex-row w-full justify-center items-center bg-white text-black py-10">
-      <nav className="flex justify-around">
-        <Link to="/" className="hover:text-gray-300 mx-6
+    <div className='flex justify-center items-center'>
+      <header className="flex flex-row w-96 mb-6 justify-center items-center bg-white text-black py-2 rounded-full">
+
+        <nav className="flex justify-around">
+          <Link to="/" className="hover:text-gray-300 mx-6
                                 transition duration-300 ease-in-out">
-                                    Home
-        </Link>
+            Home
+          </Link>
 
-        <Link to="/search" className="hover:text-gray-300 mx-6
+          <Link to="/search" className="hover:text-gray-300 mx-6
                                     transition duration-300 ease-in-out">
-                                        Search
-        </Link>
+            Search
+          </Link>
 
-        <Link to="/map" className="hover:text-gray-300 mx-6
+          <Link to="/map" className="hover:text-gray-300 mx-6
                                     transition duration-300 ease-in-out">
             Map
-        </Link>
-        
-      </nav>
-    </header>
+          </Link>
+
+        </nav>
+
+      </header>
+    </div>
   );
 };
 

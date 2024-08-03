@@ -2,17 +2,36 @@ import React from 'react';
 import ReactDOM from 'react-dom/client'; // Use 'react-dom/client' for React 18
 import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
-import './tailwind.css'; 
+import './tailwind.css';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#013220',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#ffffff',
+      contrastText: '#000',
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router> {/* Wrap the App component with Router */}
-      <App />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
     </Router>
   </React.StrictMode>,
+
   document.getElementById('root')
 );
 

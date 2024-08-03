@@ -2,19 +2,19 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DetailedLocation from './DetailedLocation';
-import { 
-    Container, 
-    Typography, 
-    TextField, 
-    Button, 
-    Box, 
-    Chip,
-    Grid,
-    Card,
-    CardContent,
-    CardMedia,
-    Rating,
-    CardActionArea
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Chip,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  Rating,
+  CardActionArea
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
@@ -23,102 +23,102 @@ import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import WcIcon from '@mui/icons-material/Wc';
 
 function Search() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedFeatures, setSelectedFeatures] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
-    const navigate = useNavigate();
-    const [selectedLocation, setSelectedLocation] = useState(null);
-    const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const navigate = useNavigate();
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const accessibilityFeatures = useMemo(() => [
-      { label: 'Ramps', icon: <AccessibilityNewIcon /> },
-      { label: 'Low Noise', icon: <VolumeDownIcon /> },
-      { label: 'Well Lit', icon: <WbSunnyIcon /> },
-      { label: 'Accessible Toilets', icon: <WcIcon /> },
-    ], []);
+  const accessibilityFeatures = useMemo(() => [
+    { label: 'Ramps', icon: <AccessibilityNewIcon /> },
+    { label: 'Low Noise', icon: <VolumeDownIcon /> },
+    { label: 'Well Lit', icon: <WbSunnyIcon /> },
+    { label: 'Accessible Toilets', icon: <WcIcon /> },
+  ], []);
 
-    const handleSearch = useCallback(async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(`http://localhost:8000/search`, {
-          params: {
-            query: searchQuery,
-            features: selectedFeatures,
-          },
-        });
-        setSearchResults(response.data);
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-        setError("An error occurred while fetching results. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    }, [searchQuery, selectedFeatures]);
+  const handleSearch = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`http://localhost:8000/search`, {
+        params: {
+          query: searchQuery,
+          features: selectedFeatures,
+        },
+      });
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setError("An error occurred while fetching results. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchQuery, selectedFeatures]);
 
-    useEffect(() => {
-      if (searchQuery) {
-        handleSearch();
-      }
-    }, [handleSearch, searchQuery]);
+  useEffect(() => {
+    if (searchQuery) {
+      handleSearch();
+    }
+  }, [handleSearch, searchQuery]);
 
-    const handleCardClick = (place) => {
-      setSelectedLocation(place);
-    };
-  
-    const handleCloseDetailedView = () => {
-      setSelectedLocation(null);
-    };
-  
-    const handleFeatureToggle = (feature) => {
-      setSelectedFeatures(prev => 
-        prev.includes(feature) 
-          ? prev.filter(f => f !== feature) 
-          : [...prev, feature]
-      );
-    };
+  const handleCardClick = (place) => {
+    setSelectedLocation(place);
+  };
 
-    const handleContributionSubmit = (placeId, newContribution) => {
-      setSearchResults(prevResults => 
-        prevResults.map(place => 
-          place.place_id === placeId 
-            ? {
-                ...place,
-                accessibility_info: {
-                  ...place.accessibility_info,
-                  features: [...new Set([...(place.accessibility_info?.features || []), ...newContribution.features])]
-                },
-                ratings: [...(place.ratings || []), { rating: newContribution.rating, comment: newContribution.comment }]
-              }
-            : place
-        )
-      );
-      setSelectedLocation(null);
-    };
+  const handleCloseDetailedView = () => {
+    setSelectedLocation(null);
+  };
+
+  const handleFeatureToggle = (feature) => {
+    setSelectedFeatures(prev =>
+      prev.includes(feature)
+        ? prev.filter(f => f !== feature)
+        : [...prev, feature]
+    );
+  };
+
+  const handleContributionSubmit = (placeId, newContribution) => {
+    setSearchResults(prevResults =>
+      prevResults.map(place =>
+        place.place_id === placeId
+          ? {
+            ...place,
+            accessibility_info: {
+              ...place.accessibility_info,
+              features: [...new Set([...(place.accessibility_info?.features || []), ...newContribution.features])]
+            },
+            ratings: [...(place.ratings || []), { rating: newContribution.rating, comment: newContribution.comment }]
+          }
+          : place
+      )
+    );
+    setSelectedLocation(null);
+  };
 
 
   return (
     <div className="flex h-full justify-center items-center flex-col">
       <div className="flex flex-col items-center justify-center p-14 gap-y-10">
         <h1 className="text-6xl">Hi, where would you like to go?</h1>
-        <h4 className="text-2xl">Tell us your preferences</h4>
+        <h4 className="text-2xl font-semibold ">Tell us your preferences</h4>
       </div>
 
       {/* Search Bar */}
       <div className="flex border-4 w-2/3 p-3 rounded-lg">
         <div className="flex flex-row w-full">
           <input
-            className="w-4/5 p-2 focus:outline-none"
+            className="w-4/5 p-2 focus:outline-none rounded-lg"
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for a place..."
             aria-label="Search for a place"
           />
-          <button 
-            className="w-1/5 justify-center flex flex-row bg-blue-500 
-                      hover:bg-blue-700 transition duration-300 ease-in-out
+          <button
+            className="w-1/5 justify-center flex flex-row bg-primary-900
+                      hover:bg-lime-950 transition duration-300 ease-in-out
                       text-white font-bold py-2 px-4 rounded align-left"
             onClick={handleSearch}
             disabled={isLoading}
@@ -137,27 +137,27 @@ function Search() {
 
       {/* Select Accessibility Features */}
       <div className="flex flex-col mt-10 items-center justify-center">
-        <h4 className="text-xl mx-6">Select Common Accessibility Features</h4>
+        <h4 className="text-xl mx-6 font-semibold ">Select Common Accessibility Features</h4>
         <div className="flex flex-row p-8">
-            <Grid container spacing={3} justifyContent="center">
+          <Grid container spacing={3} justifyContent="center">
             {accessibilityFeatures.map((feature) => (
-                <Grid item key={feature.label}>
+              <Grid item key={feature.label}>
                 <Chip
-                    icon={feature.icon}
-                    label={feature.label}
-                    onClick={() => handleFeatureToggle(feature.label)}
-                    color={selectedFeatures.includes(feature.label) ? "primary" : "default"}
+                  icon={feature.icon}
+                  label={feature.label}
+                  onClick={() => handleFeatureToggle(feature.label)}
+                  color={selectedFeatures.includes(feature.label) ? "primary" : "secondary"}
                 />
-                </Grid>
+              </Grid>
             ))}
-            </Grid>
+          </Grid>
         </div>
       </div>
 
-      <button className="bg-white text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded
-                   hover:bg-blue-700 hover:text-white
+      <button className="bg-white text-green-950 border border-green-900 font-bold py-2 px-4 rounded
+                   hover:bg-lime-950 hover:text-white
                    transition duration-300 ease-in-out mb-8"
-                   onClick={() => navigate('/browse')}>
+        onClick={() => navigate('/browse')}>
         Browse our options
       </button>
 
