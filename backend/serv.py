@@ -17,6 +17,9 @@ uri = os.getenv('MONGO_URI')
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["Cluster0"]
 
+if "user_contributions" not in db.list_collection_names():
+    db.create_collection("user_contributions")
+
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
@@ -79,12 +82,13 @@ GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
 @app.route('/search', methods=['GET'])
 def search_places():
     query = request.args.get('query')
+    accessibility_features = request.args.getlist('features')
     
     url = "https://places.googleapis.com/v1/places:searchText"
     headers = {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": GOOGLE_PLACES_API_KEY,
-        "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.photos,places.rating,places.userRatingCount"
+        "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.photos,places.rating,places.userRatingCount"
     }
     data = {
         "textQuery": query
@@ -100,17 +104,76 @@ def search_places():
             photo_reference = place['photos'][0]['name']
             photo_url = f"https://places.googleapis.com/v1/{photo_reference}/media?key={GOOGLE_PLACES_API_KEY}&maxHeightPx=400&maxWidthPx=400"
         
-        results.append({
+        place_id = place['id']
+        db_location = db.locations.find_one({"location_id": place_id})
+        
+        accessibility_info = {}
+        ratings = []
+        if db_location:
+            accessibility_info = db_location.get('accessibility_info', {})
+            ratings = db_location.get('ratings', [])
+        
+        place_data = {
+            'place_id': place_id,
             'name': place['displayName']['text'],
             'address': place.get('formattedAddress', 'Address not available'),
             'rating': place.get('rating', 'Not rated'),
             'user_ratings_total': place.get('userRatingCount', 0),
-            'photo_url': photo_url
-        })
+            'photo_url': photo_url,
+            'accessibility_info': accessibility_info,
+            'ratings': ratings
+        }
+        
+        # Filter based on accessibility features
+        if not accessibility_features or (accessibility_features and all(feature in accessibility_info.get('features', []) for feature in accessibility_features)):
+            results.append(place_data)
     
     return jsonify(results)
+
+@app.route('/locations/<location_id>/accessibility', methods=['GET'])
+def get_location_accessibility(location_id):
+    location = db.locations.find_one({"location_id": location_id})
+    if not location:
+        return jsonify({"error": "Location not found"}), 404
+    
+    accessibility_info = location.get('accessibility_info', {})
+    return jsonify(accessibility_info), 200
+
+@app.route('/locations/<location_id>/contribute', methods=['POST'])
+def contribute_location_info(location_id):
+    contribution_data = request.json
+    
+    # Update location information
+    db.locations.update_one(
+        {"location_id": location_id},
+        {"$set": {
+            "accessibility_info": contribution_data.get('accessibility_info', {}),
+        },
+         "$push": {
+             "ratings": {
+                 "rating_id": str(ObjectId()),
+                 "rating": contribution_data.get('rating'),
+                 "comment": contribution_data.get('comment')
+             }
+         }
+        },
+        upsert=True
+    )
+    
+    # Add to UserContributions collection
+    contribution_data['location_id'] = location_id
+    contribution_data['contribution_id'] = str(ObjectId())
+    db.user_contributions.insert_one(contribution_data)
+    
+    return jsonify({"message": "Contribution added successfully"}), 200
+
 
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)
-    
+
+
+
+
+
+

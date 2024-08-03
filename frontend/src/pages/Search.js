@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import DetailedLocation from './DetailedLocation';
 import { 
     Container, 
     Typography, 
@@ -33,6 +34,16 @@ function Search() {
     const [selectedFeatures, setSelectedFeatures] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [accessibilityFilters, setAccessibilityFilters] = useState([]);
+
+    const handleCardClick = (place) => {
+      setSelectedLocation(place);
+    };
+  
+    const handleCloseDetailedView = () => {
+      setSelectedLocation(null);
+    };
   
     const handleSearch = async () => {
       try {
@@ -113,7 +124,7 @@ function Search() {
         <Grid container spacing={3}>
           {searchResults.map((place, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card style={{ height: '100%' }}>
+              <Card style={{ height: '100%' }} onClick={() => handleCardClick(place)}>
                 <CardActionArea style={{ height: '100%' }}>
                   <CardMedia
                     component="img"
@@ -135,6 +146,11 @@ function Search() {
                         ({place.rating}) · {place.user_ratings_total} reviews
                       </Typography>
                     </Box>
+                    <Box mt={1}>
+                      {place.accessibility_info?.features?.map((feature, i) => (
+                        <Chip key={i} label={feature} size="small" style={{ margin: '2px' }} />
+                      ))}
+                    </Box>
                   </CardContent>
                 </CardActionArea>
               </Card>
@@ -142,6 +158,11 @@ function Search() {
           ))}
         </Grid>
       </Container>
+      <DetailedLocation
+        open={!!selectedLocation}
+        handleClose={handleCloseDetailedView}
+        location={selectedLocation}
+      />
     </div>
   );
 }
