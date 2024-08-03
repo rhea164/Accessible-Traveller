@@ -23,6 +23,8 @@ def extractLink(url, keywords):
     for link in parsed.find_all('a', href=True):
         href = link['href']
         if any(re.search(keyword, link.text, re.IGNORECASE) for keyword in keywords):
+            if "https://" in href:
+                href = href[href.find("https://", 1):]
             if not href.startswith('http'):
                 href = url + href
             links.append(href)
