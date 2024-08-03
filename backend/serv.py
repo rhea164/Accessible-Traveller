@@ -167,6 +167,11 @@ def contribute_location_info(location_id):
     
     return jsonify({"message": "Contribution added successfully"}), 200
 
+@app.route('/locations/<location_id>/contributions', methods=['GET'])
+def get_location_contributions(location_id):
+    contributions = db.user_contributions.find({"location_id": location_id})
+    return jsonify(parse_json(list(contributions))), 200
+
 
 
 if __name__ == '__main__':
