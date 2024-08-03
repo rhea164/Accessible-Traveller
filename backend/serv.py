@@ -112,6 +112,16 @@ def search_places():
     return jsonify(results)
 
 
+@app.route('/api/place-details', methods=['GET'])
+def place_details():
+    place_id = request.args.get('place_id')
+    api_key = 'YOUR_GOOGLE_PLACES_API_KEY'  # Replace with your actual API key
+    url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={api_key}'
+    
+    response = requests.get(url)
+    return jsonify(response.json())
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
     
