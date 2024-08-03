@@ -20,6 +20,7 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import WcIcon from '@mui/icons-material/Wc';
+import DetailedView from '../components/DetailedView.js';  // Import the new component
 
 const accessibilityFeatures = [
   { label: 'Ramps', icon: <AccessibilityNewIcon /> },
@@ -32,6 +33,7 @@ function Search() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedFeatures, setSelectedFeatures] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
+    const [selectedPlace, setSelectedPlace] = useState(null);  // State for the selected place
     const navigate = useNavigate();
   
     const handleSearch = async () => {
@@ -53,6 +55,14 @@ function Search() {
           ? prev.filter(f => f !== feature) 
           : [...prev, feature]
       );
+    };
+
+    const handleCardClick = (place) => {
+      setSelectedPlace(place);
+    };
+
+    const handleCloseDetailView = () => {
+      setSelectedPlace(null);
     };
 
   return (
@@ -113,7 +123,11 @@ function Search() {
         <Grid container spacing={3}>
           {searchResults.map((place, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card style={{ height: '100%' }}>
+              <Card 
+                style={{ height: '100%' }} 
+                className="border-4 border-slate-100 rounded-lg shadow-none"
+                onClick={() => handleCardClick(place)}
+              >
                 <CardActionArea style={{ height: '100%' }}>
                   <CardMedia
                     component="img"
@@ -141,6 +155,11 @@ function Search() {
             </Grid>
           ))}
         </Grid>
+
+         {/* Detailed View */}
+        {selectedPlace && (
+          <DetailedView place={selectedPlace} onClose={handleCloseDetailView} />
+        )}
       </Container>
     </div>
   );
