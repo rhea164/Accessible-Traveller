@@ -1,4 +1,3 @@
-// src/pages/Search.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +12,8 @@ import {
     Card,
     CardContent,
     CardMedia,
-    Rating
+    Rating,
+    CardActionArea
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
@@ -36,7 +36,7 @@ function Search() {
   
     const handleSearch = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/search`, {
+        const response = await axios.get(`http://localhost:8000/search`, {
           params: {
             query: searchQuery,
           },
@@ -109,30 +109,39 @@ function Search() {
       </button>
 
       {/* Search Results */}
-      <div className="w-2/3">
-        {searchResults.map((place, index) => (
-          <Card key={index} sx={{ mb: 2 }}>
-            <CardMedia
-              component="img"
-              height="140"
-              image={place.photo_url || 'https://via.placeholder.com/400x140?text=No+Image'}
-              alt={place.name}
-            />
-            <CardContent>
-              <Typography variant="h6">{place.name}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {place.address}
-              </Typography>
-              <Box display="flex" alignItems="center">
-                <Rating value={place.rating} readOnly precision={0.1} />
-                <Typography variant="body2" ml={1}>
-                  ({place.rating}) · {place.user_ratings_total} reviews
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Container>
+        <Grid container spacing={3}>
+          {searchResults.map((place, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card style={{ height: '100%' }}>
+                <CardActionArea style={{ height: '100%' }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={place.photo_url || 'https://via.placeholder.com/400x200?text=No+Image'}
+                    alt={place.name}
+                    style={{ objectFit: 'cover', height: '200px', width: '100%' }}
+                  />
+                  <CardContent>
+                    <Typography variant="h6" component="div">
+                      {place.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {place.address}
+                    </Typography>
+                    <Box display="flex" alignItems="center">
+                      <Rating value={place.rating} readOnly precision={0.1} />
+                      <Typography variant="body2" ml={1}>
+                        ({place.rating}) · {place.user_ratings_total} reviews
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </div>
   );
 }
