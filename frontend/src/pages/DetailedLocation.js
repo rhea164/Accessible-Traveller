@@ -119,7 +119,7 @@ function DetailedLocation({ open, handleClose, location }) {
             <Typography variant="body2">
               ({location?.rating}) · {location?.user_ratings_total} reviews
             </Typography>
-            <Rating value={location.rating} readOnly precision={0.1} />
+            <Rating value={location?.rating} readOnly precision={0.1} />
         </div>
       </div>
 
@@ -133,7 +133,7 @@ function DetailedLocation({ open, handleClose, location }) {
             <div
               key={index}
               className="p-5 rounded-lg bg-blue-100 mt-1 justify-self-center items-center">
-              <Rating value={contribution.rating} readOnly precision={0.1} />
+              <Rating value={contribution?.rating} readOnly precision={0.1} />
               <p className="text-sm">Comment: {contribution.comment}</p>
               <p className="text-sm">Features: {contribution.accessibility_info.features.join(', ')}</p>
             </div>
