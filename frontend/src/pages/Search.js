@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DetailedLocation from './DetailedLocation';
@@ -36,6 +36,11 @@ function Search() {
     const navigate = useNavigate();
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [accessibilityFilters, setAccessibilityFilters] = useState([]);
+    const [forceUpdate, setForceUpdate] = useState(0);
+
+    useEffect(() => {
+      handleSearch();
+    }, [selectedFeatures, forceUpdate]);
 
     const handleCardClick = (place) => {
       setSelectedLocation(place);
@@ -50,6 +55,7 @@ function Search() {
         const response = await axios.get(`http://localhost:8000/search`, {
           params: {
             query: searchQuery,
+            features: selectedFeatures,
           },
         });
         setSearchResults(response.data);
@@ -64,6 +70,10 @@ function Search() {
           ? prev.filter(f => f !== feature) 
           : [...prev, feature]
       );
+    };
+
+    const handleContributionSubmit = () => {
+      setForceUpdate(prev => prev + 1);
     };
 
   return (
@@ -162,6 +172,7 @@ function Search() {
         open={!!selectedLocation}
         handleClose={handleCloseDetailedView}
         location={selectedLocation}
+        onContributionSubmit={handleContributionSubmit}
       />
     </div>
   );

@@ -28,10 +28,12 @@ function DetailedLocation({ open, handleClose, location }) {
   const [customFeature, setCustomFeature] = useState('');
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(0);
+  const [userContributions, setUserContributions] = useState([]);
 
   useEffect(() => {
     if (location) {
       fetchAccessibilityInfo();
+      fetchUserContributions();
     }
   }, [location]);
 
@@ -42,6 +44,15 @@ function DetailedLocation({ open, handleClose, location }) {
       setSelectedFeatures(response.data.features || []);
     } catch (error) {
       console.error("Error fetching accessibility info:", error);
+    }
+  };
+
+  const fetchUserContributions = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/contributions`);
+      setUserContributions(response.data);
+    } catch (error) {
+      console.error("Error fetching user contributions:", error);
     }
   };
 
@@ -60,7 +71,7 @@ function DetailedLocation({ open, handleClose, location }) {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async ({onContributionSubmit}) => {
     try {
       await axios.post(`http://localhost:8000/locations/${location.place_id}/contribute`, {
         accessibility_info: {
@@ -69,10 +80,19 @@ function DetailedLocation({ open, handleClose, location }) {
         rating,
         comment,
       });
+      onContributionSubmit(); // Trigger re-render in parent component
+      resetFields();
       handleClose();
     } catch (error) {
       console.error("Error submitting contribution:", error);
     }
+  };
+
+  const resetFields = () => {
+    setSelectedFeatures([]);
+    setCustomFeature('');
+    setComment('');
+    setRating(0);
   };
 
   return (
@@ -122,6 +142,14 @@ function DetailedLocation({ open, handleClose, location }) {
         <Button onClick={handleSubmit} variant="contained" color="primary">
           Submit Contribution
         </Button>
+        <Typography variant="h6" mt={2}>User Contributions</Typography>
+        {userContributions.map((contribution, index) => (
+          <Box key={index} mt={1}>
+            <Typography variant="body2">Rating: {contribution.rating}</Typography>
+            <Typography variant="body2">Comment: {contribution.comment}</Typography>
+            <Typography variant="body2">Features: {contribution.accessibility_info.features.join(', ')}</Typography>
+          </Box>
+        ))}
       </DialogContent>
     </Dialog>
   );
