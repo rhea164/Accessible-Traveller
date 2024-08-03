@@ -15,7 +15,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 uri = os.getenv('MONGO_URI')
-client = MongoClient(uri, server_api=ServerApi('1'))
+client = MongoClient(uri, server_api=ServerApi('1'), tlsAllowInvalidCertificates=True)
 db = client["Cluster0"]
 
 if "user_contributions" not in db.list_collection_names():
