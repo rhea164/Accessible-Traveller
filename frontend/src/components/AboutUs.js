@@ -6,10 +6,10 @@ const logo='/about_us_image.jpg';
 
 const AboutUs = () => {
   return (
-    <div className="flex flex-col jusfity-center items-center bg-off-white w-2/3 p-7 shadow-xl rounded-lg ">
+    <div className="flex flex-col justify-between items-center bg-off-white w-2/3 p-14 my-10 shadow-xl rounded-lg ">
         <h1 className="text-3xl mb-5 font-bold ">About Us</h1>
 
-        <div className="flex flex-row items-center justify-center">
+        <div className="flex flex-row items-center justify-center text-justify">
             <p className="mr-8">
                 Welcome to Accessible Mapper!
                 <br /><br />

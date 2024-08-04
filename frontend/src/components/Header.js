@@ -10,8 +10,8 @@ const Header = () => {
 
         <img src={logo} alt="logo" className="mx-5 h-10" />
 
-        <div className="flex justify-end w-full">
-          <nav className="flex justify-end">
+        <div className="flex justify-center w-full">
+          <nav className="flex justify-end mr-48">
             <Link to="/" className="hover:bg-lime-950 hover:text-white mx-6 py-2 px-4 rounded-lg transition duration-300 ease-in-out">
               Home
             </Link>
