@@ -1,4 +1,3 @@
-// DetailedLocationView.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -23,7 +22,7 @@ const accessibilityFeatures = [
   'Quiet Spaces',
 ];
 
-function DetailedLocation({ open, handleClose, location }) {
+function DetailedLocation({ open, handleClose, location, onContributionSubmit }) {
   const [accessibilityInfo, setAccessibilityInfo] = useState({});
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [customFeature, setCustomFeature] = useState('');
@@ -36,9 +35,11 @@ function DetailedLocation({ open, handleClose, location }) {
       fetchAccessibilityInfo();
       fetchUserContributions();
     }
+    return () => resetFields();
   }, [location]);
 
   const fetchAccessibilityInfo = async () => {
+    if (!location) return;
     try {
       const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/accessibility`);
       setAccessibilityInfo(response.data);
@@ -49,6 +50,7 @@ function DetailedLocation({ open, handleClose, location }) {
   };
 
   const fetchUserContributions = async () => {
+    if (!location) return;
     try {
       const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/contributions`);
       setUserContributions(response.data);
@@ -72,14 +74,8 @@ function DetailedLocation({ open, handleClose, location }) {
     }
   };
 
-  const resetFields = () => {
-    setSelectedFeatures([]);
-    setCustomFeature('');
-    setComment('');
-    setRating(0);
-  };
-
-  const handleSubmit = async ({onContributionSubmit}) => {
+  const handleSubmit = async () => {
+    if (!location) return;
     try {
       await axios.post(`http://localhost:8000/locations/${location.place_id}/contribute`, {
         accessibility_info: {
@@ -88,12 +84,22 @@ function DetailedLocation({ open, handleClose, location }) {
         rating,
         comment,
       });
+      onContributionSubmit(location.place_id, { features: selectedFeatures, rating, comment });
       resetFields();
       handleClose();
       onContributionSubmit(); // Trigger re-render in parent component
     } catch (error) {
       console.error("Error submitting contribution:", error);
     }
+  };
+
+  const resetFields = () => {
+    setSelectedFeatures([]);
+    setCustomFeature('');
+    setComment('');
+    setRating(0);
+    setAccessibilityInfo({});
+    setUserContributions([]);
   };
 
   return (
