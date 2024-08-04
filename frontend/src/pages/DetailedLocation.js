@@ -41,7 +41,7 @@ function DetailedLocation({ open, handleClose, location, onContributionSubmit })
   const fetchAccessibilityInfo = async () => {
     if (!location) return;
     try {
-      const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/accessibility`);
+      const response = await axios.get(`https://hosting-repo.onrender.com/locations/${location.place_id}/accessibility`);
       setAccessibilityInfo(response.data);
       setSelectedFeatures(response.data.features || []);
     } catch (error) {
@@ -52,7 +52,7 @@ function DetailedLocation({ open, handleClose, location, onContributionSubmit })
   const fetchUserContributions = async () => {
     if (!location) return;
     try {
-      const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/contributions`);
+      const response = await axios.get(`https://hosting-repo.onrender.com/locations/${location.place_id}/contributions`);
       setUserContributions(response.data);
     } catch (error) {
       console.error("Error fetching user contributions:", error);
@@ -77,7 +77,7 @@ function DetailedLocation({ open, handleClose, location, onContributionSubmit })
   const handleSubmit = async () => {
     if (!location) return;
     try {
-      await axios.post(`http://localhost:8000/locations/${location.place_id}/contribute`, {
+      await axios.post(`https://hosting-repo.onrender.com/locations/${location.place_id}/contribute`, {
         accessibility_info: {
           features: selectedFeatures,
         },

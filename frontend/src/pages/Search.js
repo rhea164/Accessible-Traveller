@@ -43,7 +43,7 @@ function Search() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`http://localhost:8000/search`, {
+      const response = await axios.get(`https://hosting-repo.onrender.com/search`, {
         params: {
           query: searchQuery,
           features: selectedFeatures,
