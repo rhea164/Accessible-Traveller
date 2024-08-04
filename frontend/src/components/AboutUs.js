@@ -7,6 +7,7 @@ const Priyadarshan = '/Priyadarshan.png';
 const Rhea = '/rhea.png';
 const Elif = '/elif.png';
 const Bratee = '/bratee.png';
+const card = '/card.png';
 
 const AboutUs = () => {
     const teammates = [
@@ -49,20 +50,22 @@ const AboutUs = () => {
 
             <div className="flex md:flex-row flex-col items-center justify-center">
 
-            <p className="mr-8">
+                <p className="mr-8">
+                    Our app is dedicated to making the world more accessible for everyone. 
+                    Through your contributions, we can record accessibility information about places.
+                    <br /><br />
+                    Whether you're looking to plan an accessible 
+                    route, find out if a location is wheelchair-friendly, or read comments from other users, 
+                    our app provides valuable insights to ensure inclusivity and convenience. 
+                    Join our community in creating a more accessible world, one map at a time.
+                    We are committed to making the world more accessible for everyone, and your feedback is invaluable in achieving this goal. 
+                    Stay tuned for more features and updates as we continue to develop and improve our platform.
+                    <br></br>
+                    <br></br>
+                    Thank you for being a part of our journey towards inclusivity and accessibility!
+                </p>
 
-                Welcome to Accessible Mapper!
-                <br /><br />
-                Our app is dedicated to making the world more accessible for everyone. 
-                Through your contributions, we can record accessibility information about places.
-                <br /><br />
-                Whether you're looking to plan an accessible 
-                route, find out if a location is wheelchair-friendly, or read comments from other users, 
-                our app provides valuable insights to ensure inclusivity and convenience. 
-                Join our community in creating a more accessible world, one map at a time.
-            </p>
-
-            <img src={logo} alt="logo" className="rounded-lg h-[250px] shadow-lg" />
+                <img src={logo} alt="logo" className="rounded-lg h-[250px] shadow-lg" />
 
             </div>
 
@@ -97,6 +100,31 @@ const AboutUs = () => {
                     ))}
                 </div>
 
+        </div>
+
+        <div className="flex flex-col justify-center items-center bg-off-white p-7 shadow-xl rounded-lg col-span-2 row-span-1">
+                <h1 className="text-3xl mb-5 font-bold">How we work</h1>
+                <div className="flex md:flex-row flex-col items-center justify-center">
+
+                <p className="mr-8">
+                    In our search page, you can search for a place using the search bar. 
+                    <br></br>
+                    <br></br>
+                    You can also select accessibility features from the dropdown menu.
+                    <br></br>
+                    <br></br>
+                    Once you search up your place, you can click on any card displaying a place to view detailed information, such as 
+                    comments left by others, ratings, and other accessibility features users believe the place had.
+                    <br></br>
+                    <br></br>
+                    Additionally, you can filter your search results based on various criteria to find exactly what you're looking for. 
+                    Whether it's wheelchair accessibility, braille signage, or other specific requirements, our platform aims to provide 
+                    comprehensive information to cater to diverse needs.
+                </p>
+
+                <img src={card} alt="card display" className="rounded-lg h-[250px] shadow-lg" />
+
+            </div>
         </div>
 
     </div>
