@@ -3,6 +3,8 @@ Built for the Katy Youth Hackathon Summer 2024.
 
 Website: https://accessible-traveller.vercel.app/
 
+<a href="https://accessible-traveller.vercel.app/"><img src="/thumbnail.png" />
+
 ## **Inspiration**
 The idea for Accessible Mapper was inspired by the need to improve accessibility for people with disabilities or specific location preferences. 
 
