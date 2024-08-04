@@ -1,28 +1,34 @@
 // src/components/Header.js
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom for navigation
+const logo = '/logo.png';
 
 const Header = () => {
   return (
-    <header className="flex flex-row w-full justify-center items-center bg-white text-black py-10">
-      <nav className="flex justify-around">
-        <Link to="/" className="hover:text-gray-300 mx-6
-                                transition duration-300 ease-in-out">
-                                    Home
-        </Link>
+    <div className='flex justify-center mx-32 my-12 items-center'>
+      <header className="flex flex-row w-full border-4 border-off-white bg-off-white text-black py-3 rounded-lg shadow-lg items-center">
 
-        <Link to="/search" className="hover:text-gray-300 mx-6
-                                    transition duration-300 ease-in-out">
-                                        Search
-        </Link>
+        <img src={logo} alt="logo" className="mx-5 h-10" />
 
-        <Link to="/map" className="hover:text-gray-300 mx-6
-                                    transition duration-300 ease-in-out">
-            Map
-        </Link>
-        
-      </nav>
-    </header>
+        <div className="flex justify-end w-full">
+          <nav className="flex justify-end">
+            <Link to="/" className="hover:bg-lime-950 hover:text-white mx-6 py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+              Home
+            </Link>
+
+            <Link to="/search" className="hover:bg-lime-950 hover:text-white mx-6 py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+              Search
+            </Link>
+
+            <Link to="/map" className="hover:bg-lime-950 hover:text-white mx-6 py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+              Map
+            </Link>
+          </nav>
+        </div>
+
+      </header>
+    </div>
+
   );
 };
 
