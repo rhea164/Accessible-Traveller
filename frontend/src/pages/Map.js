@@ -8,7 +8,7 @@ const Maps = () => {
       <div className='flex justify-center items-center bg-green-50 px-2 py-1 mb-2 rounded-lg shadow-lg '>
       <h1 className=' font-semibold '>displaying accessible locations near you via markers on map</h1>
       </div>
-      <img src={mapImg} alt="Map" className='rounded-md h-[600px]  shadow-lg' />
+      <img src={mapImg} alt="Map" className='rounded-md h-[780px] w-[1190px]  shadow-lg' />
     </div>
   );
 };
