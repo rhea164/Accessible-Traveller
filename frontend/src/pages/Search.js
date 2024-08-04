@@ -100,7 +100,7 @@ function Search() {
 
 
   return (
-    <div className="mx-32 mb-12">
+    <div className="mx-5 mb-12 md:mx-32">
       <div className="flex justify-center items-center flex-col bg-off-white
                       rounded-xl shadow-xl p-2">
         <div className="flex flex-col items-center justify-center p-14 gap-y-5">
@@ -161,7 +161,7 @@ function Search() {
 
         {/* <button className="bg-white text-green-950 border border-green-900 font-bold py-2 px-4 rounded
                     hover:bg-lime-950 hover:text-white
-                    transition duration-300 ease-in-out mb-8"
+                    transition duration-300 ease-in-out"
           onClick={() => navigate('/browse')}>
           Browse our options
         </button> */}

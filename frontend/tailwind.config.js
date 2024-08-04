@@ -7,14 +7,14 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
-        'move-up': {
+        hoverUp: {
           '0%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(-10px)' },
+          '100%': { transform: 'translateY(-5px)' },
         },
       },
       animation: {
         spin: 'spin 40s linear infinite',
-        'move-up': 'move-up 0.3s ease-in-out',
+        hoverUp: 'hoverUp 0.3s ease-in-out',
       },
       colors: {
         'off-white': '#fcfcfc'
