@@ -159,12 +159,12 @@ function Search() {
           </div>
         </div>
 
-        <button className="bg-white text-green-950 border border-green-900 font-bold py-2 px-4 rounded
+        {/* <button className="bg-white text-green-950 border border-green-900 font-bold py-2 px-4 rounded
                     hover:bg-lime-950 hover:text-white
                     transition duration-300 ease-in-out"
           onClick={() => navigate('/browse')}>
           Browse our options
-        </button>
+        </button> */}
 
         {/* Search Results */}
         <Container sx={{ maxHeight:"500px", overflowY: "auto", margin: "20px", padding: "10px"}}>
