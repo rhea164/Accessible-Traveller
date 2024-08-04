@@ -7,8 +7,9 @@ const Header = () => {
   return (
     <div className='flex justify-center items-center mx-5 my-12 md:mx-32'>
       <header className="flex w-full bg-off-white text-black py-3 rounded-lg shadow-lg items-center justify-center">
-        <div className="flex justify-center items-center md:w-full">
-          <img src={logo} alt="logo" className="mx-5 h-10 align-left hidden md:block" />
+      <img src={logo} alt="logo" className="mx-5 h-10 align-left hidden md:block" />
+        <div className="flex justify-center items-center md:w-full mr-48">
+          
 
           <nav className="flex justify-center">
             <Link to="/" className="hover:bg-lime-950 hover:text-white mx-6 py-2 px-4 rounded-lg transition duration-300 ease-in-out">
