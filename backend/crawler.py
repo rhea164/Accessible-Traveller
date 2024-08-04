@@ -23,8 +23,6 @@ def extractLink(url, keywords):
     for link in parsed.find_all('a', href=True):
         href = link['href']
         if any(re.search(keyword, link.text, re.IGNORECASE) for keyword in keywords):
-            if "https://" in href:
-                href = href[href.find("https://", 1):]
             if not href.startswith('http'):
                 href = url + href
             links.append(href)
@@ -40,13 +38,11 @@ def extractContent(url):
     parsed = BeautifulSoup(content, 'html.parser')
     headers = []
 
-    for i in range(0, 6):
+    for i in range(1, 7):
         tag = 'h' + str(i)
         headers.extend(parsed.find_all(tag))
     
-    paragraphs = parsed.find_all('p')
-
-    articleContent = ' '.join([para.text for para in paragraphs])
+    articleContent = ' '.join([header.text for header in headers])
     return articleContent
 
 def crawl(baseURL, keywords):
@@ -56,11 +52,17 @@ def crawl(baseURL, keywords):
         print(f"Fetching article: {article}")
         content = extractContent(article)
         if content:
-            print(f"Article content: {content[:500]}...")
+            print(f"Article content: {content[:250]}...")
         else:
             print("Failed to retrieve article content.")
 
 if __name__ == "__main__":
-    news_url = "https://www.google.com/search?q=disability+friendly+places+of+interest&oq=disability+friendly+places+of+interest"
-    keywords = ["accessible", "accessibility", "wheelchair", "disability"]  # List of keywords
-    crawl(news_url, keywords)
+    tourism_url = "https://www.tripadvisor.com/Tourism-g191-United_States-Vacations.html"
+    keywords = [
+        "accessible", "accessibility", "wheelchair", "disability", "disabled",
+        "barrier-free", "inclusive", "mobility", "handicap", "adapted", 
+        "ADA compliant", "hearing impaired", "visually impaired", 
+        "guide dog", "service dog", "accessible restroom", "accessible parking",
+        "ramp", "elevator", "braille", "sign language", "assistive listening"
+    ]
+    crawl(tourism_url, keywords)
