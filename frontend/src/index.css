@@ -28,3 +28,11 @@ code {
 .detailed-view.show {
   transform: translateX(0);
 }
+
+.hover-up {
+  transition: transform 0.3s ease-in-out;
+}
+
+.hover-up:hover {
+  transform: translateY(-10px);
+}

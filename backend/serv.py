@@ -191,12 +191,15 @@ def get_location_contributions(location_id):
 
 @app.route('/api/place-details', methods=['GET'])
 def place_details():
-    place_id = request.args.get('place_id')
-    api_key = 'YOUR_GOOGLE_PLACES_API_KEY'  # Replace with your actual API key
-    url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={api_key}'
+    place_id = request.args.get('place_id')  # Replace with your actual API key
+    url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={GOOGLE_PLACES_API_KEY}'
     
     response = requests.get(url)
     return jsonify(response.json())
+
+def get_all_locations():
+    locations = db.locations.find()
+    return jsonify(parse_json(list(locations))), 200
 
 
 if __name__ == '__main__':
