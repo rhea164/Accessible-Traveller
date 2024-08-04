@@ -10,20 +10,19 @@ import './App.css';
 const App = () => {
   return (
     <div className="bg-image-container">
-      <Header />
-      <div className="content-container">
-        
-          
-          <main className="p-4">
+      <div className="w-full">
+        <Header />
+      </div>
+      <div className="w-full">
+        <main className="">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />
               <Route path="/maps" element={<Maps />} />
             </Routes>
           </main>
-        
       </div>
-    </div>
+      </div>
   );
 };
 

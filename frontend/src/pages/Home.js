@@ -1,11 +1,13 @@
 // src/pages/Home.js
 import React from 'react';
+import AboutUs from '../components/AboutUs';
 
 const Home = () => {
   return (
-    <div>
-      <h1>Home Page</h1>
-      <p>Welcome to the Home Page!</p>
+    <div className="mx-32 mb-12">
+      <div className="flex md:flex-col flex-row">
+        <AboutUs />
+      </div>
     </div>
   );
 };
