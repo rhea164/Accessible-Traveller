@@ -1,4 +1,3 @@
-// DetailedLocationView.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -22,7 +21,7 @@ const accessibilityFeatures = [
   'Quiet Spaces',
 ];
 
-function DetailedLocation({ open, handleClose, location }) {
+function DetailedLocation({ open, handleClose, location, onContributionSubmit }) {
   const [accessibilityInfo, setAccessibilityInfo] = useState({});
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [customFeature, setCustomFeature] = useState('');
@@ -35,9 +34,11 @@ function DetailedLocation({ open, handleClose, location }) {
       fetchAccessibilityInfo();
       fetchUserContributions();
     }
+    return () => resetFields();
   }, [location]);
 
   const fetchAccessibilityInfo = async () => {
+    if (!location) return;
     try {
       const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/accessibility`);
       setAccessibilityInfo(response.data);
@@ -48,6 +49,7 @@ function DetailedLocation({ open, handleClose, location }) {
   };
 
   const fetchUserContributions = async () => {
+    if (!location) return;
     try {
       const response = await axios.get(`http://localhost:8000/locations/${location.place_id}/contributions`);
       setUserContributions(response.data);
@@ -71,7 +73,8 @@ function DetailedLocation({ open, handleClose, location }) {
     }
   };
 
-  const handleSubmit = async ({onContributionSubmit}) => {
+  const handleSubmit = async () => {
+    if (!location) return;
     try {
       await axios.post(`http://localhost:8000/locations/${location.place_id}/contribute`, {
         accessibility_info: {
@@ -80,7 +83,7 @@ function DetailedLocation({ open, handleClose, location }) {
         rating,
         comment,
       });
-      onContributionSubmit(); // Trigger re-render in parent component
+      onContributionSubmit(location.place_id, { features: selectedFeatures, rating, comment });
       resetFields();
       handleClose();
     } catch (error) {
@@ -93,63 +96,91 @@ function DetailedLocation({ open, handleClose, location }) {
     setCustomFeature('');
     setComment('');
     setRating(0);
+    setAccessibilityInfo({});
+    setUserContributions([]);
   };
-
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>{location?.name}</DialogTitle>
+      <DialogTitle>Accessibility Features for {location?.name}</DialogTitle>
       <DialogContent>
-        <Typography variant="body1">{location?.formatted_address}</Typography>
-        <Box my={2}>
-          <Typography variant="h6">Accessibility Features</Typography>
-          <Grid container spacing={1}>
-            {accessibilityFeatures.map((feature) => (
-              <Grid item key={feature}>
-                <Chip
-                  label={feature}
-                  onClick={() => handleFeatureToggle(feature)}
-                  color={selectedFeatures.includes(feature) ? "primary" : "default"}
-                />
-              </Grid>
+        <Box>
+          
+          <Typography variant="h6">Selected Features:</Typography>
+          <Box display="flex" flexWrap="wrap" mb={2}>
+            {selectedFeatures.map((feature, index) => (
+              <Chip
+                key={index}
+                label={feature}
+                onDelete={() => handleFeatureToggle(feature)} 
+                color="primary"
+                variant="outlined"
+                style={{ margin: 2 }}
+              />
             ))}
-          </Grid>
-        </Box>
-        <Box my={2}>
-          <TextField
-            label="Add custom feature"
-            value={customFeature}
-            onChange={(e) => setCustomFeature(e.target.value)}
-          />
-          <Button onClick={handleAddCustomFeature}>Add</Button>
-        </Box>
-        <TextField
-          label="Comment"
-          multiline
-          rows={4}
-          fullWidth
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          margin="normal"
-        />
-        <TextField
-          label="Rating"
-          type="number"
-          inputProps={{ min: 0, max: 5, step: 0.5 }}
-          value={rating}
-          onChange={(e) => setRating(parseFloat(e.target.value))}
-          margin="normal"
-        />
-        <Button onClick={handleSubmit} variant="contained" color="primary">
-          Submit Contribution
-        </Button>
-        <Typography variant="h6" mt={2}>User Contributions</Typography>
-        {userContributions.map((contribution, index) => (
-          <Box key={index} mt={1}>
-            <Typography variant="body2">Rating: {contribution.rating}</Typography>
-            <Typography variant="body2">Comment: {contribution.comment}</Typography>
-            <Typography variant="body2">Features: {contribution.accessibility_info.features.join(', ')}</Typography>
           </Box>
-        ))}
+          
+          <Grid container spacing={2} mb={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Add Custom Feature"
+                value={customFeature}
+                onChange={(e) => setCustomFeature(e.target.value)}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                variant="contained"
+                onClick={handleAddCustomFeature}
+                fullWidth
+              >
+                Add Feature
+              </Button>
+            </Grid>
+          </Grid>
+  
+          <Grid container spacing={2} mb={2}>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1">Rating:</Typography>
+              <TextField
+                type="number"
+                inputProps={{ min: 0, max: 5 }}
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+  
+          <Grid container spacing={2} mb={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                multiline
+                rows={4}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+  
+          <Box mt={4}>
+            <Button
+              onClick={handleSubmit}
+              color="primary"
+              variant="contained"
+              style={{ marginRight: '10px' }}
+            >
+              Submit Contribution
+            </Button>
+            <Button
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          </Box>
+        </Box>
       </DialogContent>
     </Dialog>
   );
