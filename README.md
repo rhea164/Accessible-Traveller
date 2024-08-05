@@ -1,7 +1,7 @@
 # Accessible-Mapper
 Built for the Katy Youth Hackathon Summer 2024. 
 
-Watch the demo video : https://www.youtube.com/watch?v=2zwleuLEn3I&t=88s&ab_channel=BrateePodder
+Watch the demo video : https://www.youtube.com/watch?v=2zwleuLEn3I&t=88s&ab_channel=BrateePodder <br>
 Website: https://accessible-traveller.vercel.app/
 
 <a href="https://accessible-traveller.vercel.app/"><img src="/thumbnail.png" />
