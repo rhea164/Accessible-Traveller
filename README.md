@@ -1,10 +1,14 @@
 # Accessible-Mapper
 Built for the Katy Youth Hackathon Summer 2024. 
 
-Watch the demo video : https://www.youtube.com/watch?v=2zwleuLEn3I&t=88s&ab_channel=BrateePodder <br>
 Website: https://accessible-traveller.vercel.app/
 
 <a href="https://accessible-traveller.vercel.app/"><img src="/thumbnail.png" />
+<br>
+
+Demo video : 
+
+https://github.com/user-attachments/assets/46d2ed58-93f7-439e-8a68-3531838357a6
 
 ## **Inspiration**
 The idea for Accessible Mapper was inspired by the need to improve accessibility for people with disabilities or specific location preferences. 
